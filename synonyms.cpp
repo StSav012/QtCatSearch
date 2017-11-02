@@ -63,3 +63,7 @@ void Synonyms::on_text_filter_textChanged(const QString &filter) {
 void Synonyms::on_buttonBox_rejected() {
 	this->reject();
 }
+
+void Synonyms::on_list_doubleClicked(const QModelIndex &index) {
+	ui->text_filter->setText(ui->list->item(index.row())->text());
+}

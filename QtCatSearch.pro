@@ -49,7 +49,7 @@ win32 {
 	RC_FILE += resource.rc
 }
 
-VERSION = 5.3.0
+VERSION = 5.3.1
 
 DISTFILES += \
 	resource.rc

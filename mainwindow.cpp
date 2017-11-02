@@ -378,7 +378,12 @@ void MainWindow::on_menu_selectAll_triggered() {
 }
 
 void MainWindow::on_menu_searchNames_triggered() {
-	syn->ui->text_filter->setText(ui->table->item(ui->table->selectedRanges().first().topRow(), 0)->text());
+	if (!ui->table->selectedRanges().isEmpty()) {
+		syn->ui->text_filter->setText(ui->table->item(ui->table->selectedRanges().first().topRow(), 0)->text());
+	}
+	else {
+		syn->ui->text_filter->setText(ui->text_substance->text());
+	}
 	syn->exec();
 }
 

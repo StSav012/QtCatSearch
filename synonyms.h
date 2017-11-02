@@ -34,6 +34,8 @@ private slots:
 
 	void on_buttonBox_rejected();
 
+	void on_list_doubleClicked(const QModelIndex &index);
+
 private:
 	Ui::Synonyms *ui;
 
