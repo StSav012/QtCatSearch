@@ -673,6 +673,13 @@ void MainWindow::fillTable() {
 	ui->menu_save->setDisabled(searchResults.isEmpty());
 }
 
+/**
+ * @brief MainWindow::loadCatalogFile loads a catalog file, unzipping it if necessary
+ * @param fileName is the name of the file to read from
+ * @param type is the assumed JSON file type to load the file quicker
+ * @bug “QJson: Document too large to store…” is silently raised if the JSON document is larger than MAX_INT
+ * @returns a QJsonArray structure that is not empty if the file is loaded without an error
+ */
 QJsonArray MainWindow::loadCatalogFile(const QString &fileName, JsonType type) {
 	QFile f(fileName);
 	if (!f.open(QIODevice::ReadOnly)) {
@@ -731,6 +738,13 @@ QJsonArray MainWindow::loadCatalogFile(const QString &fileName, JsonType type) {
 	return catalogFileData;
 }
 
+/**
+ * @brief MainWindow::loadCatalogs loads one or several catalogs and applies filtering to them
+ * @param fileNames is the list of the file names to load from
+ * @bug “QJson: Document too large to store…” is silently raised if the resulting JSON document is larger than MAX_INT
+ * @todo store the data loaded from each file in a separate QJsonArray
+ * @returns true if some data is loaded and false otherwise
+ */
 bool MainWindow::loadCatalogs(const QStringList &fileNames) {
 	while (!catalogData.isEmpty()) {
 		catalogData.removeLast();
@@ -752,11 +766,15 @@ bool MainWindow::loadCatalogs(const QStringList &fileNames) {
 	return ok;
 }
 
+/**
+ * @brief MainWindow::filterSubstancesList lefts only the matching substance names in the substance list
+ * @param filter is the string to match
+ */
 void MainWindow::filterSubstancesList(const QString &filter) {
 	if (ui->check_saveselection->isChecked()) {
 		for (int i = 0; i < ui->list_substance->count(); ++i) {
 			QListWidgetItem *item = ui->list_substance->item(i);
-			if (item->checkState() == Qt::Checked) {
+			if (item->checkState() == Qt::Checked && !selectedSubstances.contains(item->text())) {
 				selectedSubstances.append(item->text());
 			}
 		}
@@ -780,15 +798,17 @@ void MainWindow::filterSubstancesList(const QString &filter) {
 	}
 }
 
+/**
+ * @brief MainWindow::on_button_search_clicked contains searching through the loaded catalog(s) routine
+ */
 void MainWindow::on_button_search_clicked()
 {
 	ui->statusBar->showMessage(tr("Searching..."));
 	searchResults.clear();
-	QList<QListWidgetItem*> selectedSubstances;
 	for (int i = 0; i < ui->list_substance->count(); ++i) {
 		QListWidgetItem *item = ui->list_substance->item(i);
-		if (item->checkState() == Qt::Checked) {
-			selectedSubstances.append(item);
+		if (item->checkState() == Qt::Checked && !selectedSubstances.contains(item->text())) {
+			selectedSubstances.append(item->text());
 		}
 	}
 	if (ui->box_substance->isChecked() && selectedSubstances.isEmpty()) {
@@ -820,8 +840,8 @@ void MainWindow::on_button_search_clicked()
 			if (ui->box_substance->isChecked()) {
 				foreach (QString key, nameKeys) {
 					catalogSubstanceName = catalogEntry.value(key).toString().trimmed();
-					foreach (QListWidgetItem* selectedSubstance, selectedSubstances) {
-						if (!catalogSubstanceName.isEmpty() && catalogSubstanceName == selectedSubstance->text()) {
+					foreach (QString selectedSubstance, selectedSubstances) {
+						if (!catalogSubstanceName.isEmpty() && catalogSubstanceName == selectedSubstance) {
 							matches = true;
 							break;
 						}
