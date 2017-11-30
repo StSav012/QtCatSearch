@@ -109,9 +109,10 @@ private:
 	QStringList nameKeys = QStringList()
 //						   << QString("moleculesymbol")
 						   << QString("name")
-						   << QString("trivialname")
 						   << QString("structuralformula")
-						   << QString("stoichiometricformula");
+						   << QString("stoichiometricformula")
+						   << QString("trivialname")
+							  ;
 
 	QStringList catalogFileNames;
 
@@ -151,6 +152,8 @@ private:
 	void fillParameters();
 
 	void copySelectedItems(int col);
+
+	QString callSubstance(const QJsonObject &catalogEntry);
 };
 
 #endif // MAINWINDOW_H

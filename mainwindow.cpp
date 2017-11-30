@@ -428,11 +428,13 @@ void MainWindow::on_menu_about_triggered() {
 					   + QString("</p><p>")
 					   + tr("Both plain text JSON and binary JSON currently used only by Qt are supported.")
 					   + QString("</p><br><p>")
-					   + tr("CatSearch is licensed under the "
-							"<a href='https://www.gnu.org/copyleft/lesser.html'>GNU LGPL version 3</a>.")
+					   + tr("CatSearch is licensed under the %1.")
+					   .arg(QString("<a href='https://www.gnu.org/copyleft/lesser.html'>%1</a>")
+							.arg(tr("GNU LGPL version 3")))
 					   + QString("</p><p>")
-					   + tr("To obtain the source code, mail")
-					   + QString(" <a href='mailto:stsav012@gmail.com'>stsav012@gmail.com</a>.</p></html>")
+					   + tr("The source code is available on %1.").arg(
+					   QString("<a href='https://github.com/StSav012/QtCatSearch'>%1</a>").arg(tr("GitHub")))
+					   + QString("</p></html>")
 					   );
 }
 
@@ -774,8 +776,13 @@ void MainWindow::filterSubstancesList(const QString &filter) {
 	if (ui->check_saveselection->isChecked()) {
 		for (int i = 0; i < ui->list_substance->count(); ++i) {
 			QListWidgetItem *item = ui->list_substance->item(i);
-			if (item->checkState() == Qt::Checked && !selectedSubstances.contains(item->text())) {
-				selectedSubstances.append(item->text());
+			if (item->checkState() == Qt::Checked) {
+				if (!selectedSubstances.contains(item->text())) {
+					selectedSubstances.append(item->text());
+				}
+			}
+			else {
+				selectedSubstances.removeAll(item->text());
 			}
 		}
 	}
@@ -799,6 +806,22 @@ void MainWindow::filterSubstancesList(const QString &filter) {
 }
 
 /**
+ * @brief MainWindow::callSubstance looks for the first non-empty name for a given substance catalog entry
+ * @param catalogEntry is the catalog entry for a substance to find a name of
+ * @returns the name of the substance or “??” if none is found
+ */
+QString MainWindow::callSubstance(const QJsonObject &catalogEntry) {
+	QString catalogSubstanceName = "??";
+	foreach (QString key, nameKeys) {
+		catalogSubstanceName = catalogEntry.value(key).toString().trimmed();
+		if (!catalogSubstanceName.isEmpty()) {
+			break;
+		}
+	}
+	return catalogSubstanceName;
+}
+
+/**
  * @brief MainWindow::on_button_search_clicked contains searching through the loaded catalog(s) routine
  */
 void MainWindow::on_button_search_clicked()
@@ -807,8 +830,13 @@ void MainWindow::on_button_search_clicked()
 	searchResults.clear();
 	for (int i = 0; i < ui->list_substance->count(); ++i) {
 		QListWidgetItem *item = ui->list_substance->item(i);
-		if (item->checkState() == Qt::Checked && !selectedSubstances.contains(item->text())) {
-			selectedSubstances.append(item->text());
+		if (item->checkState() == Qt::Checked) {
+			if (!selectedSubstances.contains(item->text())) {
+				selectedSubstances.append(item->text());
+			}
+		}
+		else {
+			selectedSubstances.removeAll(item->text());
 		}
 	}
 	if (ui->box_substance->isChecked() && selectedSubstances.isEmpty()) {
@@ -842,6 +870,7 @@ void MainWindow::on_button_search_clicked()
 					catalogSubstanceName = catalogEntry.value(key).toString().trimmed();
 					foreach (QString selectedSubstance, selectedSubstances) {
 						if (!catalogSubstanceName.isEmpty() && catalogSubstanceName == selectedSubstance) {
+							catalogSubstanceName = callSubstance(catalogEntry);
 							matches = true;
 							break;
 						}
@@ -852,13 +881,8 @@ void MainWindow::on_button_search_clicked()
 				}
 			}
 			else {
-				matches = true;
-				foreach (QString key, nameKeys) {
-					catalogSubstanceName = catalogEntry.value(key).toString().trimmed();
-					if (!catalogSubstanceName.isEmpty()) {
-						break;
-					}
-				}
+				matches = true;			// the substance doesn't matter
+				catalogSubstanceName = callSubstance(catalogEntry);
 			}
 			if (matches) {
 				qint8 DR = catalogEntry.value("degreesoffreedom").toInt(-1);

@@ -1,0 +1,75 @@
+{
+    "catalog": [
+        {
+            "name": "(SiO2)10Fe(SiO2)10Fe(SiO2)10Fe(SiO2)10Cu-Newton",
+            "stoichiometricformula": "Si40O80Fe3Cu",
+            "structuralformula": "(SiO2)10Fe(SiO2)10Fe(SiO2)10Fe(SiO2)10Cu",
+            "trivialname": "lapis philosophorum",
+            "degreesoffreedom": 3,
+            "lines": [
+                {
+                    "frequency": 100000,
+                    "intensity": -3.14159265359,
+                    "lowerstateenergy": -13.4
+                },
+                {
+                    "frequency": 200000,
+                    "intensity": -6.28318530718,
+                    "lowerstateenergy": -7.8
+                },
+                {
+                    "frequency": 666666,
+                    "intensity": -1,
+                    "lowerstateenergy": -2.718281828459045235360287471352662497757247093699959574966
+                }
+            ]
+        },
+        {
+            "name": "etherum",
+            "structuralformula": "",
+            "trivialname": "etherum",
+            "degreesoffreedom": 0,
+            "lines": [
+                {
+                    "frequency": 111111,
+                    "intensity": -3.14159265359,
+                    "lowerstateenergy": -13.4
+                },
+                {
+                    "frequency": 222222,
+                    "intensity": -6.28318530718,
+                    "lowerstateenergy": -7.8
+                },
+                {
+                    "frequency": 666666.6666,
+                    "intensity": -3,
+                    "lowerstateenergy": -2.718281828459045235360287471352662497757247093699959574966
+                }
+            ]
+        },
+        {
+            "name": "(H2O)3(C2H5OH)2-RUS",
+            "stoichiometricformula": "C2H18O5",
+            "trivialname": "vodka",
+            "degreesoffreedom": 3,
+            "lines": [
+                {
+                    "frequency": 123456.789,
+                    "intensity": -0.100,
+                    "lowerstateenergy": -13.4
+                },
+                {
+                    "frequency": 9876543.210,
+                    "intensity": -1.000,
+                    "lowerstateenergy": -7.8
+                },
+                {
+                    "frequency": 555555,
+                    "intensity": -0.5,
+                    "lowerstateenergy": -2.718281828459045235360287471352662497757247093699959574966
+                }
+            ]
+        }
+    ]
+}
+
